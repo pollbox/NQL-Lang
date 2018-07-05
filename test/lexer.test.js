@@ -102,6 +102,9 @@ describe('Lexer', function () {
 
     describe('LITERAL values', function () {
         it('should match literals', function () {
+            lex('m').should.eql([
+                {token: 'LITERAL', matched: 'm'}
+            ]);
             lex('myvalue').should.eql([
                 {token: 'LITERAL', matched: 'myvalue'}
             ]);
@@ -124,6 +127,11 @@ describe('Lexer', function () {
         });
 
         it('should separate NOT at beginning of literal', function () {
+            lex('-p').should.eql([
+                {token: 'NOT', matched: '-'},
+                {token: 'LITERAL', matched: 'p'}
+            ]);
+
             lex('-photo').should.eql([
                 {token: 'NOT', matched: '-'},
                 {token: 'LITERAL', matched: 'photo'}
@@ -325,6 +333,7 @@ describe('Lexer', function () {
 
     describe('STRING values', function () {
         it('can recognise simple STRING', function () {
+            lex('\'m\'').should.eql([{token: 'STRING', matched: '\'m\''}]);
             lex('\'magic\'').should.eql([{token: 'STRING', matched: '\'magic\''}]);
             lex('\'magic mystery\'').should.eql([{token: 'STRING', matched: '\'magic mystery\''}]);
             lex('\'magic 123\'').should.eql([{token: 'STRING', matched: '\'magic 123\''}]);
@@ -424,6 +433,36 @@ describe('Lexer', function () {
     });
 
     describe('Filter expressions', function () {
+        it('should handle single char expressions', function () {
+            lex('t:photo').should.eql([
+                {token: 'PROP', matched: 't:'},
+                {token: 'LITERAL', matched: 'photo'}
+            ]);
+            lex('tag:p').should.eql([
+                {token: 'PROP', matched: 'tag:'},
+                {token: 'LITERAL', matched: 'p'}
+            ]);
+            lex('t:p').should.eql([
+                {token: 'PROP', matched: 't:'},
+                {token: 'LITERAL', matched: 'p'}
+            ]);
+            lex('t:-photo').should.eql([
+                {token: 'PROP', matched: 't:'},
+                {token: 'NOT', matched: '-'},
+                {token: 'LITERAL', matched: 'photo'}
+            ]);
+            lex('tag:-p').should.eql([
+                {token: 'PROP', matched: 'tag:'},
+                {token: 'NOT', matched: '-'},
+                {token: 'LITERAL', matched: 'p'}
+            ]);
+            lex('t:-p').should.eql([
+                {token: 'PROP', matched: 't:'},
+                {token: 'NOT', matched: '-'},
+                {token: 'LITERAL', matched: 'p'}
+            ]);
+        });
+
         it('should separate NOT at beginning of literal', function () {
             lex('tag:-photo').should.eql([
                 {token: 'PROP', matched: 'tag:'},
