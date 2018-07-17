@@ -4,9 +4,13 @@
 
 %options case-insensitive
 
-badcharsincnot               [^\s'"\+\,\(\)\>\<=\[\]\-:]
-badcharsnonot                [^\s'"\+\,\(\)\>\<=\[\]]
-escapable                    ['"\+\,\(\)\>\<=\[\]]
+/* Character classes that we use to form LITERAL values */
+/* Is NOT one of: space ' " + , ( ) > < = [ ] - : */
+validstartchar               [^\s'"\+\,\(\)\>\<=\[\]\-:]
+/* Is NOT one of: space ' " + , ( ) > < = [ ] */
+validchar                    [^\s'"\+\,\(\)\>\<=\[\]]
+/* Is one of: ' " + , ( ) > < = [ ] */
+escapable                      ['"\+\,\(\)\>\<=\[\]]
 
 
 %%
@@ -19,7 +23,7 @@ escapable                    ['"\+\,\(\)\>\<=\[\]]
 [0-9]+(\.[0-9]+)?\b(?![\-])                                 return 'NUMBER';
 '['                                                         return 'LBRACKET';
 ']'                                                         return 'RBRACKET';
-{badcharsincnot}{1}(\\{escapable}|{badcharsnonot})*         return 'LITERAL';
+{validstartchar}{1}(\\{escapable}|{validchar})*             return 'LITERAL';
 ['](\\['"]|[^'"])+?[']                                      return 'STRING';
 '('                                                         return 'LPAREN';
 ')'                                                         return 'RPAREN';
