@@ -144,38 +144,55 @@ describe('Lexer', function () {
         });
 
         it('should NOT permit special chars inside a literal', function () {
+            lex('te+st').should.eql([
+                {token: 'LITERAL', matched: 'te'},
+                {token: 'AND', matched: '+'},
+                {token: 'LITERAL', matched: 'st'}
+            ]);
+            lex('te,st').should.eql([
+                {token: 'LITERAL', matched: 'te'},
+                {token: 'OR', matched: ','},
+                {token: 'LITERAL', matched: 'st'}
+            ]);
+            lex('te(st').should.eql([
+                {token: 'LITERAL', matched: 'te'},
+                {token: 'LPAREN', matched: '('},
+                {token: 'LITERAL', matched: 'st'}
+            ]);
+            lex('te)st').should.eql([
+                {token: 'LITERAL', matched: 'te'},
+                {token: 'RPAREN', matched: ')'},
+                {token: 'LITERAL', matched: 'st'}
+            ]);
+            lex('te>st').should.eql([
+                {token: 'LITERAL', matched: 'te'},
+                {token: 'GT', matched: '>'},
+                {token: 'LITERAL', matched: 'st'}
+            ]);
+            lex('te<st').should.eql([
+                {token: 'LITERAL', matched: 'te'},
+                {token: 'LT', matched: '<'},
+                {token: 'LITERAL', matched: 'st'}
+            ]);
+            lex('te[st').should.eql([
+                {token: 'LITERAL', matched: 'te'},
+                {token: 'LBRACKET', matched: '['},
+                {token: 'LITERAL', matched: 'st'}
+            ]);
+            lex('te]st').should.eql([
+                {token: 'LITERAL', matched: 'te'},
+                {token: 'RBRACKET', matched: ']'},
+                {token: 'LITERAL', matched: 'st'}
+            ]);
+
             (function () {
-                lex('t+st');
+                lex('te=st');
             }).should.throw(lexicalError);
             (function () {
-                lex('t,st');
+                lex('te\'st');
             }).should.throw(lexicalError);
             (function () {
-                lex('t(st');
-            }).should.throw(lexicalError);
-            (function () {
-                lex('t)st');
-            }).should.throw(lexicalError);
-            (function () {
-                lex('t>st');
-            }).should.throw(lexicalError);
-            (function () {
-                lex('t<st');
-            }).should.throw(lexicalError);
-            (function () {
-                lex('t=st');
-            }).should.throw(lexicalError);
-            (function () {
-                lex('t[st');
-            }).should.throw(lexicalError);
-            (function () {
-                lex('t]st');
-            }).should.throw(lexicalError);
-            (function () {
-                lex('t\'st');
-            }).should.throw(lexicalError);
-            (function () {
-                lex('t"st');
+                lex('te"st');
             }).should.throw(lexicalError);
         });
 
