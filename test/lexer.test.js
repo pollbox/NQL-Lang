@@ -38,6 +38,7 @@ describe('Lexer', function () {
         it('can recognise <=', function () {
             lex('<=').should.eql([{token: 'LTE', matched: '<='}]);
         });
+
         it('cannot recognise :', function () {
             (function () {
                 lex(':');
@@ -317,11 +318,8 @@ describe('Lexer', function () {
     });
 
     describe('LITERAL vs PROP', function () {
-        it('should match colon in string as PROP before, literal after', function () {
-            lex(':test').should.eql([
-                {token: 'LITERAL', matched: ':test'}
-            ]);
-
+        // We currently do not allow colons to exist at the start of a literal
+        it('should match colon correctly', function () {
             lex('te:st').should.eql([
                 {token: 'PROP', matched: 'te:'},
                 {token: 'LITERAL', matched: 'st'}
@@ -330,6 +328,16 @@ describe('Lexer', function () {
             lex('test:').should.eql([
                 {token: 'PROP', matched: 'test:'}
             ]);
+
+            // We can't match 2 colons, as this would put one at the start of the literal
+            (function () {
+                lex('te::st');
+            }).should.throw(lexicalError);
+
+            // We can't match a colon at the start of a literal
+            (function () {
+                lex(':test');
+            }).should.throw(lexicalError);
         });
 
         it('should only match colon-at-end as PROP if PROP is valPROP', function () {

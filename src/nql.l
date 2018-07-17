@@ -4,7 +4,7 @@
 
 %options case-insensitive
 
-badcharsincnot               [^\s'"\+\,\(\)\>\<=\[\]\-]
+badcharsincnot               [^\s'"\+\,\(\)\>\<=\[\]\-:]
 badcharsnonot                [^\s'"\+\,\(\)\>\<=\[\]]
 escapable                    ['"\+\,\(\)\>\<=\[\]]
 
@@ -19,7 +19,7 @@ escapable                    ['"\+\,\(\)\>\<=\[\]]
 [0-9]+(\.[0-9]+)?\b(?![\-])                                 return 'NUMBER';
 '['                                                         return 'LBRACKET';
 ']'                                                         return 'RBRACKET';
-{badcharsincnot}(\\{escapable}|{badcharsnonot})+            return 'LITERAL';
+{badcharsincnot}{1}(\\{escapable}|{badcharsnonot})*         return 'LITERAL';
 ['](\\['"]|[^'"])+?[']                                      return 'STRING';
 '('                                                         return 'LPAREN';
 ')'                                                         return 'RPAREN';
