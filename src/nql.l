@@ -30,6 +30,7 @@ escapable                    ['"\+\,\(\)\>\<=\[\]]
 '<='                                                        return 'LTE';
 '>'                                                         return 'GT';
 '<'                                                         return 'LT';
+'%'                                                         return 'LIKE';
 
 %%
 

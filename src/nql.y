@@ -67,7 +67,7 @@ VALUE
     | FALSE { $$ = false }
     | NUMBER { $$ = parseInt(yytext); }
     | LITERAL { $$ = yy.unescape($1); }
-    | STRING  { $1 = $1.replace(/^'|'$/g, ''); $$ = yy.unescape($1); }
+    | STRING  { $1 = $1.replace(/^'|'$/g, ''); $$ = yy.unescape($1);}
     ;
 
 OP
@@ -76,4 +76,5 @@ OP
     | LT { $$ = "$lt"; }
     | GTE { $$ = "$gte"; }
     | LTE { $$ = "$lte"; }
+    | LIKE { $$ = "$like"; }
     ;
